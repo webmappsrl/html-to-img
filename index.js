@@ -5,9 +5,11 @@ const app = express();
 const port = 3000;
 
 async function convertHtmlToPdf(url, outputPath) {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ headless: "new",args: ['--no-sandbox', '--disable-setuid-sandbox'], });
   const page = await browser.newPage();
-  await page.goto(url, {waitUntil: 'networkidle2'}); // Aspetta che la rete sia inattiva per almeno 500ms
+  await page.setJavaScriptEnabled(true);
+
+  await page.goto(url, {waitUntil: 'networkidle2',timeout:0}); // Aspetta che la rete sia inattiva per almeno 500ms
   await page.pdf({ path: outputPath, format: 'A4' });
   await browser.close();
   console.log(`PDF salvato in: ${outputPath}`);
